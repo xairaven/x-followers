@@ -32,10 +32,12 @@ pub fn list(nickname: &str) -> Result<Vec<User>, GithubError> {
             .text()
             .map_err(GithubError::SendFailed)?;
 
+        if let Ok(error_message) = serde_json::from_str::<ErrorMessage>(&response) {
+            return Err(GithubError::Api(error_message.to_string()));
+        }
+
         let mut new_users: Vec<User> =
-            serde_json::from_str(&response).map_err(|err| {
-                GithubError::JsonConversion(format!("{}. Text: {}", err, response))
-            })?;
+            serde_json::from_str(&response).map_err(GithubError::JsonConversion)?;
 
         if new_users.is_empty() {
             break;
@@ -56,8 +58,27 @@ pub struct User {
     pub html_url: String,
 }
 
+#[derive(serde::Deserialize, Debug, Clone)]
+pub struct ErrorMessage {
+    pub message: String,
+    pub documentation_url: String,
+}
+
+impl std::fmt::Display for ErrorMessage {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "Message: {}. Documentation URL: {}",
+            self.message, self.documentation_url
+        )
+    }
+}
+
 #[derive(Debug, Error)]
 pub enum GithubError {
+    #[error("{0}")]
+    Api(String),
+
     #[error("Failed to build client. {0}")]
     ClientBuild(reqwest::Error),
 
@@ -65,7 +86,7 @@ pub enum GithubError {
     InvalidUserAgent,
 
     #[error("Failed to convert response to JSON. {0}")]
-    JsonConversion(String),
+    JsonConversion(#[from] serde_json::Error),
 
     #[error("Failed to send request. {0}")]
     SendFailed(reqwest::Error),
