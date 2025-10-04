@@ -1,5 +1,4 @@
 use reqwest::header;
-use serde_json::Value;
 use thiserror::Error;
 
 pub fn list(nickname: &str) -> Result<Vec<User>, GithubError> {
@@ -18,34 +17,19 @@ pub fn list(nickname: &str) -> Result<Vec<User>, GithubError> {
             nickname, page
         );
 
-        let response: Value = client
+        let mut new_users: Vec<User> = client
             .get(url)
             .headers(headers.clone())
             .send()
             .map_err(GithubError::SendFailed)?
-            .json()
+            .json::<Vec<User>>()
             .map_err(GithubError::JsonConversion)?;
 
-        let array = response.as_array().ok_or(GithubError::StructureInvalid)?;
-
-        if array.is_empty() {
+        if new_users.is_empty() {
             break;
         }
 
-        for value in array {
-            let user = User {
-                id: value["id"].as_i64().ok_or(GithubError::StructureInvalid)?,
-                login: value["login"]
-                    .as_str()
-                    .ok_or(GithubError::StructureInvalid)?
-                    .to_string(),
-                url: value["url"]
-                    .as_str()
-                    .ok_or(GithubError::StructureInvalid)?
-                    .to_string(),
-            };
-            users.push(user);
-        }
+        users.append(&mut new_users);
 
         page += 1;
     }
@@ -53,6 +37,8 @@ pub fn list(nickname: &str) -> Result<Vec<User>, GithubError> {
     Ok(users)
 }
 
+#[derive(serde::Deserialize)]
+#[serde(deny_unknown_fields)]
 #[derive(Debug, Clone)]
 pub struct User {
     pub id: i64,
