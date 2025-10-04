@@ -1,5 +1,5 @@
 [package]
-name = "github"
+name = "api"
 version = "0.0.1"
 authors = ["Alex Kovalov <alexkovalevkpi@gmail.com>"]
 

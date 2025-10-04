@@ -1,7 +1,7 @@
 [workspace]
 resolver = "2"
 
-members = ["github"]
+members = ["api", "cli"]
 
 [profile.release]
 lto = true
