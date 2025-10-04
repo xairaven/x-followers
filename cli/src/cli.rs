@@ -22,10 +22,10 @@ pub struct Cli {
     #[arg(
         short = 'o',
         long,
-        help = "Path to the output file where results will be saved."
+        help = "Path to the output folder where results will be saved."
     )]
     pub output_path: Option<PathBuf>,
 
-    #[arg(short = 'f', long, help = "Filename.")]
+    #[arg(short = 'f', long, help = "Output file name.")]
     pub file_name: Option<String>,
 }

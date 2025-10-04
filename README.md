@@ -1,10 +1,11 @@
 # X-Followers
 
-Sometimes people follow me, I follow them back, 
-and then they unfollow - and I have no idea who it was. 
-To make it easy to find the traitors, you can use this 
-utility. Time for all the unfollowers to 
-start sweating 😁 
+Sometimes people follow me, I follow them back, and then they 
+unfollow - leaving me clueless about who did it. To make catching the 
+traitors easy, use this utility to save a snapshot of your followers, 
+and later, after a betrayal, generate a new snapshot and compare the two 
+with a diff - either the built-in Linux command or any online tool. 
+Time for all the unfollowers to start sweating 😁
 
 (I’m kidding, of course - but don’t unfollow me 🙄)
 
@@ -18,8 +19,8 @@ Options:
   -n, --nickname <NICKNAME>        User nickname.
   -s, --service <SERVICE>          Service (Github, ..). [possible values: github]
   -d, --exclude-description        Exclude description from the first line.
-  -o, --output-path <OUTPUT_PATH>  Path to the output file where results will be saved.
-  -f, --file-name <FILE_NAME>      Filename.
+  -o, --output-path <OUTPUT_PATH>  Path to the output folder where results will be saved.
+  -f, --file-name <FILE_NAME>      Output file name.
   -h, --help                       Print help
   -V, --version                    Print version
 ```
