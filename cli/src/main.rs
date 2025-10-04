@@ -24,7 +24,7 @@ fn main() {
 
     let mut text = String::new();
 
-    if cli.include_description {
+    if !cli.exclude_description {
         let description = format!(
             "# List of {} followers on {} for {}. Date: {}",
             users.len(),

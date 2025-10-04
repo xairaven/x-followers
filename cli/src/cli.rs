@@ -1,5 +1,4 @@
 use crate::services::Service;
-use clap::ArgAction;
 use clap::Parser;
 use std::path::PathBuf;
 
@@ -14,11 +13,11 @@ pub struct Cli {
 
     #[arg(
         short = 'd',
-        action=ArgAction::SetFalse,
+        action,
         long,
-        help = "Include description as the first line."
+        help = "Exclude description from the first line."
     )]
-    pub include_description: bool,
+    pub exclude_description: bool,
 
     #[arg(
         short = 'o',
