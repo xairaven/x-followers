@@ -1,10 +1,11 @@
 use crate::cli::Cli;
 use crate::services::Service;
+use chrono::Local;
 use clap::Parser;
 
 fn main() {
     let cli = Cli::parse();
-    let date = chrono::Utc::now();
+    let date = Local::now().format("%d.%m.%Y %H:%M").to_string();
 
     let request = match cli.service {
         Service::Github => api::Request::Github {
@@ -25,8 +26,11 @@ fn main() {
 
     if cli.include_description {
         let description = format!(
-            "# List of followers on {} for {}. Date: {}",
-            cli.service, cli.nickname, date
+            "# List of {} followers on {} for {}. Date: {}",
+            users.len(),
+            cli.service,
+            cli.nickname,
+            date
         );
         text.push_str(&description);
         text.push('\n');
