@@ -2,12 +2,19 @@ use reqwest::header;
 use thiserror::Error;
 
 pub fn list(nickname: &str) -> Result<Vec<User>, GithubError> {
-    let headers = header::HeaderMap::new();
-
     let client = reqwest::blocking::Client::builder()
         .redirect(reqwest::redirect::Policy::none())
         .build()
         .map_err(GithubError::ClientBuild)?;
+
+    let mut headers = header::HeaderMap::new();
+
+    headers.insert(
+        "User-Agent",
+        "X-Followers"
+            .parse()
+            .map_err(|_| GithubError::InvalidUserAgent)?,
+    );
 
     let mut page = 1;
     let mut users: Vec<User> = vec![];
@@ -37,19 +44,20 @@ pub fn list(nickname: &str) -> Result<Vec<User>, GithubError> {
     Ok(users)
 }
 
-#[derive(serde::Deserialize)]
-#[serde(deny_unknown_fields)]
-#[derive(Debug, Clone)]
+#[derive(serde::Deserialize, Debug, Clone)]
 pub struct User {
     pub id: i64,
     pub login: String,
-    pub url: String,
+    pub html_url: String,
 }
 
 #[derive(Debug, Error)]
 pub enum GithubError {
     #[error("Failed to build client. {0}")]
     ClientBuild(reqwest::Error),
+
+    #[error("Invalid user agent.")]
+    InvalidUserAgent,
 
     #[error("Failed to convert response to JSON. {0}")]
     JsonConversion(reqwest::Error),
