@@ -1,0 +1,20 @@
+[package]
+name = "github"
+version = "0.0.1"
+authors = ["Alex Kovalov <alexkovalevkpi@gmail.com>"]
+
+edition = "2024"
+rust-version = "1.90"
+
+categories = ["parsing"]
+keywords = ["github"]
+
+readme = "../README.md"
+license = "MIT"
+repository = "https://github.com/xairaven/x-followers"
+
+[lints]
+workspace = true
+
+[dependencies]
+thiserror = "2.0.17"
