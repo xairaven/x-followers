@@ -4,7 +4,9 @@ pub fn list(request: Request) -> Result<Vec<String>, Error> {
             let users = github::list(&nickname)?;
             let lines = users
                 .into_iter()
-                .map(|user| format!("{} [{}], URL: {}", user.login, user.id, user.url))
+                .map(|user| {
+                    format!("{} [{}], URL: {}", user.login, user.id, user.html_url)
+                })
                 .collect();
             Ok(lines)
         },
