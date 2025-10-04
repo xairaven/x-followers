@@ -1,6 +1,6 @@
 [package]
 name = "cli"
-version = "0.0.1"
+version = "1.0.0"
 authors = ["Alex Kovalov <alexkovalevkpi@gmail.com>"]
 
 edition = "2024"
@@ -20,4 +20,3 @@ api = { path = "../api" }
 
 chrono = "0.4.42"
 clap = { version = "4.5.48", features = ["derive"] }
-thiserror = "2.0.17"
