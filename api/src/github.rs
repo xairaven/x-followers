@@ -24,13 +24,18 @@ pub fn list(nickname: &str) -> Result<Vec<User>, GithubError> {
             nickname, page
         );
 
-        let mut new_users: Vec<User> = client
+        let response = client
             .get(url)
             .headers(headers.clone())
             .send()
             .map_err(GithubError::SendFailed)?
-            .json::<Vec<User>>()
-            .map_err(GithubError::JsonConversion)?;
+            .text()
+            .map_err(GithubError::SendFailed)?;
+
+        let mut new_users: Vec<User> =
+            serde_json::from_str(&response).map_err(|err| {
+                GithubError::JsonConversion(format!("{}. Text: {}", err, response))
+            })?;
 
         if new_users.is_empty() {
             break;
@@ -60,7 +65,7 @@ pub enum GithubError {
     InvalidUserAgent,
 
     #[error("Failed to convert response to JSON. {0}")]
-    JsonConversion(reqwest::Error),
+    JsonConversion(String),
 
     #[error("Failed to send request. {0}")]
     SendFailed(reqwest::Error),
