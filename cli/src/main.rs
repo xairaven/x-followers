@@ -5,7 +5,7 @@ use clap::Parser;
 
 fn main() {
     let cli = Cli::parse();
-    let date = Local::now().format("%d.%m.%Y %H:%M").to_string();
+    let date = Local::now();
 
     let request = match cli.service {
         Service::Github => api::Request::Github {
@@ -30,7 +30,7 @@ fn main() {
             users.len(),
             cli.service,
             cli.nickname,
-            date
+            date.format("%d.%m.%Y %H:%M")
         );
         text.push_str(&description);
         text.push('\n');
@@ -44,9 +44,12 @@ fn main() {
     match cli.output_path {
         None => println!("{}", text),
         Some(path) => {
-            let filename = cli
-                .file_name
-                .unwrap_or(format!("{}-{}-{}.txt", &cli.service, &cli.nickname, date));
+            let filename = cli.file_name.unwrap_or(format!(
+                "{}-{}-{}.txt",
+                &cli.service,
+                &cli.nickname,
+                date.format("%d-%m-%Y-%H-%M")
+            ));
             let path = path.join(filename);
 
             std::fs::write(path, text).unwrap_or_else(|error| {
